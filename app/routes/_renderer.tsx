@@ -1,6 +1,28 @@
-import { Style } from 'hono/css'
-import { jsxRenderer } from 'hono/jsx-renderer'
-import { Script } from 'honox/server'
+import { Style, css } from "hono/css";
+import { jsxRenderer } from "hono/jsx-renderer";
+import { Script } from "honox/server";
+import Header from "../components/header";
+
+const bodyClass = css`
+  background-color: rgb(229 231 235);
+`;
+
+const containerClass = css`
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  padding-top: 3rem;
+  padding-bottom: 5rem;
+
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  @media (min-width: 640px) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+`;
 
 export default jsxRenderer(({ children, title }) => {
   return (
@@ -13,7 +35,12 @@ export default jsxRenderer(({ children, title }) => {
         <Script src="/app/client.ts" async />
         <Style />
       </head>
-      <body>{children}</body>
+      <body class={bodyClass}>
+        <div class={containerClass}>
+          <Header />
+          {children}
+        </div>
+      </body>
     </html>
-  )
-})
+  );
+});

@@ -1,24 +1,34 @@
-import pages from '@hono/vite-cloudflare-pages'
-import adapter from '@hono/vite-dev-server/cloudflare'
-import honox from 'honox/vite'
-import client from 'honox/vite/client'
-import { defineConfig } from 'vite'
+import pages from "@hono/vite-cloudflare-pages";
+import adapter from "@hono/vite-dev-server/cloudflare";
+import honox from "honox/vite";
+import client from "honox/vite/client";
+import { defineConfig } from "vite";
+import ssg from "@hono/vite-ssg";
+
+const entry = "./app/server.ts";
 
 export default defineConfig(({ mode }) => {
-  if (mode === 'client') {
+  if (mode === "client") {
     return {
-      plugins: [client()]
-    }
+      plugins: [client()],
+    };
   } else {
     return {
-      plugins: [
-        honox({
-          devServer: {
-            adapter
-          }
-        }),
-        pages()
-      ]
-    }
+      build: {
+        emptyOutDir: false,
+      },
+      plugins: [honox(), ssg({ entry })],
+      // plugins: [
+      //   honox({
+      //     devServer: {
+      //       adapter
+      //     }
+      //   }),
+      //   pages()
+      // ]
+    };
   }
-})
+  // return {
+  //   plugins: [honox(), ssg({ entry })],
+  // };
+});
