@@ -38,7 +38,7 @@ export default jsxRenderer(({ children, title }) => {
       <body class={bodyClass}>
         <div class={containerClass}>
           <Header />
-          {children}
+          <main>{children}</main>
         </div>
       </body>
     </html>

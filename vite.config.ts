@@ -3,32 +3,33 @@ import adapter from "@hono/vite-dev-server/cloudflare";
 import honox from "honox/vite";
 import client from "honox/vite/client";
 import { defineConfig } from "vite";
-import ssg from "@hono/vite-ssg";
 
-const entry = "./app/server.ts";
+const baseConfig = {
+  ssr: {
+    external: ["@prisma/client", "@prisma/adapter-d1"],
+  },
+};
 
 export default defineConfig(({ mode }) => {
   if (mode === "client") {
     return {
+      ...baseConfig,
       plugins: [client()],
     };
   } else {
     return {
+      ...baseConfig,
       build: {
         emptyOutDir: false,
       },
-      plugins: [honox(), ssg({ entry })],
-      // plugins: [
-      //   honox({
-      //     devServer: {
-      //       adapter
-      //     }
-      //   }),
-      //   pages()
-      // ]
+      plugins: [
+        honox({
+          devServer: {
+            adapter,
+          },
+        }),
+        pages(),
+      ],
     };
   }
-  // return {
-  //   plugins: [honox(), ssg({ entry })],
-  // };
 });
