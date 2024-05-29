@@ -1,18 +1,20 @@
-import { css } from "hono/css";
 import { FC } from "hono/jsx";
-
-const headerClass = css`
-  color: rgb(31 41 55);
-  font-weight: 800;
-  font-size: 3rem;
-  line-height: 1;
-`;
 
 const Header: FC = () => {
   return (
-    <h1 class={headerClass}>
-      <a href="/">Hono Blog</a>
-    </h1>
+    <header class="bg-white shadow">
+      <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="text-xl font-semibold text-gray-900">Kouta-W Blog</div>
+        <nav class="flex space-x-4">
+          <a href="#" class="text-gray-600 hover:text-gray-900">
+            Home
+          </a>
+          <a href="#" class="text-gray-600 hover:text-gray-900">
+            About
+          </a>
+        </nav>
+      </div>
+    </header>
   );
 };
 

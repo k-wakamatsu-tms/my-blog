@@ -2,27 +2,7 @@ import { Style, css } from "hono/css";
 import { jsxRenderer } from "hono/jsx-renderer";
 import { Script } from "honox/server";
 import Header from "../components/header";
-
-const bodyClass = css`
-  background-color: rgb(229 231 235);
-`;
-
-const containerClass = css`
-  max-width: 760px;
-  display: flex;
-  flex-direction: column;
-  margin: 0 auto;
-  padding-top: 3rem;
-  padding-bottom: 5rem;
-
-  padding-left: 1rem;
-  padding-right: 1rem;
-
-  @media (min-width: 640px) {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-`;
+import Footer from "../components/footer";
 
 export default jsxRenderer(({ children, title }) => {
   return (
@@ -35,11 +15,10 @@ export default jsxRenderer(({ children, title }) => {
         <Script src="/app/client.ts" async />
         <Style />
       </head>
-      <body class={bodyClass}>
-        <div class={containerClass}>
-          <Header />
-          <main>{children}</main>
-        </div>
+      <body class={"bg-gray-100 text-gray-800"}>
+        <Header />
+        <main class={"container mx-auto px-6 py-8"}>{children}</main>
+        <Footer />
       </body>
     </html>
   );
