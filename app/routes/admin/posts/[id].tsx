@@ -3,7 +3,9 @@ import { PrismaD1 } from "@prisma/adapter-d1";
 import { Category, PrismaClient, Tag } from "@prisma/client";
 import { FC } from "hono/jsx";
 import { createRoute } from "honox/factory";
-import { z } from "zod";
+import { string, z } from "zod";
+import ContentForm from "../../../islands/contentForm";
+import { createPrismaClient } from "../../../lib/prisma";
 
 type Data = {
   error?: Record<string, string[] | undefined>;
@@ -19,13 +21,14 @@ const Page: FC<{ categories: Category[]; tags: Tag[]; data?: Data }> = ({
   data,
 }) => {
   return (
-    <div class="p-6">
+    <div class="p-6" x-data>
       <h2 class="text-2xl font-bold">記事編集</h2>
       <form method="POST" class="mt-6">
         <div class="mb-4">
           <div>
             <label class="block text-gray-700">タイトル</label>
             <input
+              id="title"
               type="text"
               name="title"
               value={data?.title}
@@ -36,6 +39,7 @@ const Page: FC<{ categories: Category[]; tags: Tag[]; data?: Data }> = ({
           <div class="mb-4">
             <label class="block text-gray-700">カテゴリ</label>
             <select
+              id="category"
               name="category"
               class="w-full p-2 border border-gray-300 rounded mt-2"
             >
@@ -44,10 +48,12 @@ const Page: FC<{ categories: Category[]; tags: Tag[]; data?: Data }> = ({
                 <option value={category.id}>{category.name}</option>
               ))}
             </select>
+            {data?.error?.category && <p>{data.error.category}</p>}
           </div>
           <div class="mb-4">
             <label class="block text-gray-700">タグ</label>
             <select
+              id="tags"
               name="tags"
               multiple
               class="w-full p-2 border border-gray-300 rounded mt-2"
@@ -56,16 +62,11 @@ const Page: FC<{ categories: Category[]; tags: Tag[]; data?: Data }> = ({
                 <option value={tag.id}>{tag.name}</option>
               ))}
             </select>
+            {data?.error?.tags && <p>{data.error.tags}</p>}
           </div>
           <div class="mb-4">
             <label class="block text-gray-700">本文</label>
-            <textarea
-              name="content"
-              class="w-full p-2 border border-gray-300 rounded mt-2"
-              rows={10}
-            >
-              {data?.content}
-            </textarea>
+            <ContentForm initialValue={data?.content} />
             {data?.error?.content && <p>{data.error.content}</p>}
           </div>
         </div>
@@ -84,8 +85,7 @@ const Page: FC<{ categories: Category[]; tags: Tag[]; data?: Data }> = ({
 
 export default createRoute(async (c) => {
   const { id } = c.req.param();
-  const adapter = new PrismaD1(c.env.DB);
-  const prisma = new PrismaClient({ adapter });
+  const prisma = await createPrismaClient(c.env.DB);
   const categories = await prisma.category.findMany();
   const tags = await prisma.tag.findMany();
 
@@ -115,31 +115,38 @@ const schema = z.object({
   title: z.string().min(3).max(255),
   content: z.string().min(3),
   category: z.string(),
-  tags: z.array(z.string()),
+  tags: z.string(),
 });
 
 export const POST = createRoute(
   zValidator("form", schema, async (result, c) => {
-    const adapter = new PrismaD1(c.env.DB);
-    const prisma = new PrismaClient({ adapter });
+    console.log(result);
+    const prisma = await createPrismaClient(c.env.DB);
     const categories = await prisma.category.findMany();
     const tags = await prisma.tag.findMany();
 
     if (!result.success) {
-      const { title, content } = result.data;
+      const { title, content, category, tags: tag } = result.data;
       return c.render(
         <Page
           categories={categories}
           tags={tags}
-          data={{ title, content, error: result.error.flatten().fieldErrors }}
+          data={{
+            title,
+            content,
+            category,
+            tags: new Array(tag),
+            error: result.error.flatten().fieldErrors,
+          }}
         />
       );
     }
   }),
   async (c) => {
+    console.log(c.req.valid("form"));
     const { title, content, category, tags } = c.req.valid("form");
-    const adapter = new PrismaD1(c.env.DB);
-    const prisma = new PrismaClient({ adapter });
+    const prisma = await createPrismaClient(c.env.DB);
+    console.log(title, content, category, tags);
 
     await prisma.post.create({
       data: {
@@ -147,7 +154,8 @@ export const POST = createRoute(
         content,
         categoryId: category,
         tags: {
-          connect: tags.map((tag) => ({ id: tag })),
+          // connect: tags.map((tag) => ({ id: tag })),
+          connect: { id: tags },
         },
       },
     });

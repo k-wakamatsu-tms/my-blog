@@ -1,10 +1,11 @@
 import { PrismaD1 } from "@prisma/adapter-d1";
 import { PrismaClient } from "@prisma/client";
 import { createRoute } from "honox/factory";
+import { createPrismaClient } from "../../lib/prisma";
+import DeleteButton from "../../islands/deleteButton";
 
 export default createRoute(async (c) => {
-  const adapter = new PrismaD1(c.env.DB);
-  const prisma = new PrismaClient({ adapter });
+  const prisma = await createPrismaClient(c.env.DB);
 
   const posts = await prisma.post.findMany({
     include: {
@@ -17,12 +18,12 @@ export default createRoute(async (c) => {
     <div class="p-6">
       <div class="flex justify-between items-center">
         <h2 class="text-2xl font-bold">記事一覧</h2>
-        <button
+        <a
+          href="/admin/posts/create"
           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          onClick={() => c.redirect("/admin/posts/create", 301)}
         >
           新規作成
-        </button>
+        </a>
       </div>
       <table class="min-w-full bg-white mt-6">
         <thead>
@@ -34,19 +35,6 @@ export default createRoute(async (c) => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td class="border px-4 py-2">サンプル記事</td>
-            <td class="border px-4 py-2">カテゴリ1</td>
-            <td class="border px-4 py-2">タグ1,タグ2</td>
-            <td class="border px-4 py-2">
-              <button class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
-                編集
-              </button>
-              <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
-                削除
-              </button>
-            </td>
-          </tr>
           {posts.map((post) => (
             <tr key={post.id}>
               <td class="border px-4 py-2">{post.title}</td>
@@ -55,15 +43,13 @@ export default createRoute(async (c) => {
                 {post.tags.map((tag) => tag.name).join(",")}
               </td>
               <td class="border px-4 py-2">
-                <button
+                <a
+                  href={`/admin/posts/${post.id}`}
                   class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
-                  onClick={() => c.redirect(`/admin/posts/${post.id}`)}
                 >
                   編集
-                </button>
-                <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
-                  削除
-                </button>
+                </a>
+                <DeleteButton articleId={post.id} />
               </td>
             </tr>
           ))}

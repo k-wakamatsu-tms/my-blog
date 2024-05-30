@@ -3,10 +3,10 @@ import { PrismaD1 } from "@prisma/adapter-d1";
 import { PrismaClient } from "@prisma/client";
 import { createRoute } from "honox/factory";
 import { z } from "zod";
+import { createPrismaClient } from "../../../lib/prisma";
 
 export default createRoute(async (c) => {
-  const adapter = new PrismaD1(c.env.DB);
-  const prisma = new PrismaClient({ adapter });
+  const prisma = await createPrismaClient(c.env.DB);
 
   const tags = await prisma.tag.findMany();
 
@@ -64,8 +64,7 @@ export const POST = createRoute(
       return c.redirect("/admin/tags", 303);
     }
 
-    const adapter = new PrismaD1(c.env.DB);
-    const prisma = new PrismaClient({ adapter });
+    const prisma = await createPrismaClient(c.env.DB);
 
     await prisma.tag.create({
       data: {
