@@ -7,5 +7,6 @@
   "editor.formatOnSaveMode": "file",
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
-  }
+  },
+  "cSpell.words": ["hono"]
 }
