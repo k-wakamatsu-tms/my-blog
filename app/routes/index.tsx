@@ -9,7 +9,7 @@ dayjs.extend(relativeTime);
 
 const ArticleList: FC<{ article: Post }> = ({ article }) => {
   return (
-    <li class={"mb-4"}>
+    <div class={"mb-4 p-4 border rounded-lg shadow-sm bg-white"}>
       <a
         href={`articles/${article.id}`}
         class={"text-blue-500 hover:text-blue-700"}
@@ -17,7 +17,7 @@ const ArticleList: FC<{ article: Post }> = ({ article }) => {
         {article.title}
       </a>
       <p class="text-gray-600">{article.createdAt.toString()}</p>
-    </li>
+    </div>
   );
 };
 
@@ -31,25 +31,19 @@ export default createRoute(async (c) => {
     <>
       <section class="bg-white rounded-lg shadow-lg p-6 mb-8">
         <h1 class="text-2xl font-bold mb-4">ようこそ！</h1>
-        <p class="text-gray-700 mb-6">tech, daily, etc...</p>
-        {/* <a href="#" class="text-blue-500 hover:text-blue-700">
-        続きを読む...
-      </a> */}
+        <p class="text-gray-700 mb-6">
+          大阪在住のエンジニアです。主に技術系のことやたまに日常のことなどを発信していきます。
+          <br />
+          メインはWeb系
+        </p>
       </section>
       <section class="bg-white rounded-lg shadow-lg p-6">
         <h2 class="text-xl font-semibold mb-4">最新の投稿</h2>
-        <ul>
-          <li class={"mb-4"}>
-            <a href={`articles/`} class={"text-blue-500 hover:text-blue-700"}>
-              {"テストタイトル"}
-            </a>
-            <p class="text-gray-600">{"2024年5月29日"}</p>
-          </li>
-
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {posts.map((article) => (
             <ArticleList article={article} />
           ))}
-        </ul>
+        </div>
       </section>
     </>
   );

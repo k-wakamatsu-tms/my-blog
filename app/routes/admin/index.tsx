@@ -1,46 +1,61 @@
-import { css } from "hono/css";
+import { PrismaD1 } from "@prisma/adapter-d1";
+import { PrismaClient } from "@prisma/client";
 import { createRoute } from "honox/factory";
+import { createPrismaClient } from "../../lib/prisma";
+import DeleteButton from "../../islands/deleteButton";
 
-const classForm = css`
-  background-color: #fff;
-  padding: 1.5rem;
-  border-width: 1px;
-  border-radius: 0.75rem;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  margin-top: 1rem;
-`;
+export default createRoute(async (c) => {
+  const prisma = await createPrismaClient(c.env.DB);
 
-const classDivInputs = css`
-  row-gap: 0.5rem;
-  flex-direction: column;
-  display: flex;
-`;
+  const posts = await prisma.post.findMany({
+    include: {
+      category: true,
+      tags: true,
+    },
+  });
 
-const classDivButton = css`
-  justify-content: flex-end;
-  display: flex;
-  margin-top: 1rem;
-`;
-
-const classInputTitle = css`
-  padding: 0.5rem;
-  border-color: rgb(209 213 219);
-  border-width: 1px;
-  border-radius: 0.375rem;
-  width: 100%;
-`;
-
-const grayColor = css`
-  color: rgb(107 114 128);
-`;
-
-const classTextRed = css`
-  color: rgb(239 68 68);
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-`;
-
-// app/routes/nested/index.tsx
-export default createRoute((c) => {
-  return c.render(<div>Content</div>, { title: "Dashboard" });
+  return c.render(
+    <div class="p-6">
+      <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-bold">記事一覧</h2>
+        <a
+          href="/admin/posts/create"
+          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          新規作成
+        </a>
+      </div>
+      <table class="min-w-full bg-white mt-6">
+        <thead>
+          <tr>
+            <th class="py-2">タイトル</th>
+            <th class="py-2">カテゴリ</th>
+            <th class="py-2">タグ</th>
+            <th class="py-2">アクション</th>
+          </tr>
+        </thead>
+        <tbody>
+          {posts.map((post) => (
+            <tr key={post.id}>
+              <td class="border px-4 py-2">{post.title}</td>
+              <td class="border px-4 py-2">{post.category?.name}</td>
+              <td class="border px-4 py-2">
+                {post.tags.map((tag) => tag.name).join(",")}
+              </td>
+              <td class="border px-4 py-2">
+                <a
+                  href={`/admin/posts/${post.id}`}
+                  class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
+                >
+                  編集
+                </a>
+                <DeleteButton articleId={post.id} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>,
+    { title: "Dashboard" }
+  );
 });

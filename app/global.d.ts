@@ -2,6 +2,7 @@ import {} from "hono";
 
 type Head = {
   title?: string;
+  hasScripts?: boolean;
 };
 
 declare module "hono" {
