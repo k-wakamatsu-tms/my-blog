@@ -20,9 +20,9 @@ export default jsxRenderer(({ children, title }) => {
         <Script src="/app/client.ts" async />
         <Style />
       </head>
-      <body class={"bg-gray-100 text-gray-800"}>
+      <body class={"bg-gray-100 text-gray-800 flex flex-col min-h-screen"}>
         <Header />
-        <main class={"container mx-auto px-6 py-8"}>{children}</main>
+        <main class={"container mx-auto px-6 py-8 flex-grow"}>{children}</main>
         <Footer />
       </body>
     </html>
