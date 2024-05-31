@@ -1,9 +1,8 @@
 import { zValidator } from "@hono/zod-validator";
-import { PrismaD1 } from "@prisma/adapter-d1";
-import { Category, PrismaClient, Tag } from "@prisma/client";
+import { Category, Tag } from "@prisma/client";
 import { FC } from "hono/jsx";
 import { createRoute } from "honox/factory";
-import { string, z } from "zod";
+import { z } from "zod";
 import ContentForm from "../../../islands/contentForm";
 import { createPrismaClient } from "../../../lib/prisma";
 
@@ -141,24 +140,18 @@ export const POST = createRoute(
         />
       );
     }
-  }),
-  async (c) => {
-    console.log(c.req.valid("form"));
-    const { title, content, category, tags } = c.req.valid("form");
-    const prisma = await createPrismaClient(c.env.DB);
-    console.log(title, content, category, tags);
 
+    const { title, content, category, tags: tag } = result.data;
     await prisma.post.create({
       data: {
         title,
         content,
         categoryId: category,
         tags: {
-          // connect: tags.map((tag) => ({ id: tag })),
-          connect: { id: tags },
+          connect: { id: tag },
         },
       },
     });
-    return c.redirect("/", 303);
-  }
+    return c.redirect("/admin", 303);
+  })
 );
