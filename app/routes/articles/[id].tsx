@@ -14,6 +14,10 @@ export default createRoute(async (c) => {
     where: {
       id: id,
     },
+    include: {
+      tags: true,
+      category: true,
+    },
   });
 
   if (!article) {
@@ -30,6 +34,16 @@ export default createRoute(async (c) => {
           <Time created_at={article.createdAt.toString()}>
             {dayjs(article.createdAt).format("YYYY-MM-DD HH:mm:ss")}
           </Time>
+          <div class="mt-4">
+            <span class="bg-blue-200 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+              カテゴリ: {article.category.name}
+            </span>
+            {article.tags.map((tag) => (
+              <span class="bg-green-200 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+                {tag.name}
+              </span>
+            ))}
+          </div>
         </header>
         <section>
           <div
