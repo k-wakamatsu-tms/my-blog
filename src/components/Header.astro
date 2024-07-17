@@ -1,0 +1,57 @@
+---
+import { siteConfig, navBarConfig } from "../config";
+import { Icon } from "astro-icon/components";
+import ThemeToggleButton from "./ThemeToggleButton";
+---
+
+<header class="fixed h-16 w-full blur-global">
+  <div class="container-global h-full flex items-center">
+    <div class="text-xl font-bold cursor-pointer">
+      <a href="/">{siteConfig.title}</a>
+    </div>
+
+    <nav class="ml-auto max-sm:hidden">
+      {
+        navBarConfig.links.map((link) => {
+          return (
+            <a
+              class="ml-8 hover:text-secondary transition-all"
+              href={link.url}
+              target={link.target}
+            >
+              {link.name}
+            </a>
+          );
+        })
+      }
+    </nav>
+    <div
+      class="ml-auto hidden max-sm:flex icon-button cursor-pointer relative group"
+    >
+      <Icon class="w-6 h-6 m-auto" name="material-symbols:menu-rounded" />
+      <nav
+        class="absolute top-8 -left-full rounded-xl shadow-xl bg-base hidden group-hover:block animate-in fade-in"
+      >
+        {
+          navBarConfig.links.map((link) => {
+            return (
+              <a
+                class="flex items-center pl-2 py-2 first:rounded-t-xl last:rounded-b-xl hover:bg-hover transition-all"
+                href={link.url}
+                target={link.target}
+              >
+                {link.name}
+                <Icon
+                  class="w-6 h-6 ml-auto"
+                  name="material-symbols:chevron-right-rounded"
+                />
+              </a>
+            );
+          })
+        }
+      </nav>
+    </div>
+    <!-- <button id="theme" class="ml-8 max-sm:ml-4 icon-button"></button> -->
+    <ThemeToggleButton client:load />
+  </div>
+</header>

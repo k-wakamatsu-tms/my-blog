@@ -1,34 +1,35 @@
 {
-  "name": "basic",
+  "name": "astro-blur",
   "type": "module",
+  "version": "0.0.3",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build --mode client && vite build",
-    "preview": "wrangler pages dev",
-    "deploy": "$npm_execpath run build && wrangler pages deploy"
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "new": "node scripts/new-post.js"
   },
-  "private": true,
   "dependencies": {
-    "@hono/vite-ssg": "^0.1.0",
-    "@hono/zod-validator": "^0.2.1",
-    "@markdoc/markdoc": "^0.4.0",
-    "@prisma/adapter-d1": "^5.14.0",
-    "@prisma/client": "^5.14.0",
-    "dayjs": "^1.11.11",
-    "hono": "^4.3.11",
-    "honox": "^0.1.17",
-    "microcms-js-sdk": "^3.1.1",
-    "zod": "^3.23.8"
+    "@astrojs/check": "^0.8.2",
+    "@astrojs/mdx": "^3.1.2",
+    "@astrojs/react": "^3.6.0",
+    "@astrojs/rss": "^4.0.7",
+    "@astrojs/sitemap": "^3.1.6",
+    "@astrojs/tailwind": "^5.1.0",
+    "@iconify-json/material-symbols": "^1.1.84",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "astro": "^4.11.5",
+    "astro-icon": "^1.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.6",
+    "typescript": "^5.5.3"
   },
+  "packageManager": "pnpm@9.1.4+sha512.9df9cf27c91715646c7d675d1c9c8e41f6fce88246f1318c1aa6a1ed1aeb3c4f032fcdf4ba63cc69c4fe6d634279176b5358727d8f2cc1e65b65f43ce2f8bfb0",
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240403.0",
-    "@hono/vite-cloudflare-pages": "^0.4.0",
-    "@hono/vite-dev-server": "^0.12.1",
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.38",
-    "prisma": "^5.14.0",
-    "tailwindcss": "^3.4.3",
-    "vite": "^5.2.11",
-    "wrangler": "^3.47.0"
+    "@tailwindcss/typography": "^0.5.13",
+    "tailwindcss-animate": "^1.0.7"
   }
 }
