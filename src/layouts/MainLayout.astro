@@ -2,6 +2,7 @@
 import {siteConfig, socialLinks} from "../config";
 import {Icon} from 'astro-icon/components'
 import BaseLayout from "./BaseLayout.astro";
+import { Image } from "astro:assets";
 
 interface Props {
     title?: string;
@@ -17,7 +18,7 @@ const {title, description, image} = Astro.props
             <aside class="bg-base transition-all basis-[16rem] shrink-0 rounded-xl max-md:hidden sticky top-20 mr-4">
                 <slot name="aside">
                     <div class="p-4 flex flex-col">
-                        <img src={siteConfig.avatar} alt="avatar"
+                        <Image src={siteConfig.avatar} alt="avatar" width={200} height={200}
                              class="w-56 h-56 rounded-full dark:brightness-75 transition-all"/>
                         <div class="text-center font-bold text-xl mt-4">
                             {siteConfig.author}
